@@ -8,7 +8,7 @@ Terraform module for [Azure DataBricks](https://learn.microsoft.com/en-us/azure/
 <!-- todo update module name -->
 ```hcl
 module "shared_integration_databricks" {
-  source      = "github.com/hmcts/terraform-module-azure-datafactory?ref=main"
+  source      = "github.com/hmcts/terraform-module-databricks?ref=main"
   env         = var.env
   product     = "platops"
   component   = "example"
