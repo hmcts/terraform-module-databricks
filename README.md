@@ -1,17 +1,29 @@
-# terraform-module-template
+# terraform-module-databricks
 
 <!-- TODO fill in resource name in link to product documentation -->
-Terraform module for [Resource name](https://example.com).
+Terraform module for [Azure DataBricks](https://learn.microsoft.com/en-us/azure/databricks/).
 
 ## Example
 
 <!-- todo update module name -->
 ```hcl
-module "todo_resource_name" {
-  source = "git@github.com:hmcts/terraform-module-todo?ref=main"
-  ...
+module "shared_integration_databricks" {
+  source      = "github.com/hmcts/terraform-module-azure-datafactory?ref=main"
+  env         = var.env
+  product     = "platops"
+  component   = "example"
+  common_tags = module.common_tags.common_tags
 }
 
+# only for use when building from ADO and as a quick example to get valid tags
+# if you are building from Jenkins use `var.common_tags` provided by the pipeline
+module "common_tags" {
+  source = "github.com/hmcts/terraform-module-common-tags?ref=master"
+
+  builtFrom   = "hmcts/terraform-module-mssql"
+  environment = var.env
+  product     = "sds-platform"
+}
 ```
 
 <!-- BEGIN_TF_DOCS -->
@@ -31,21 +43,31 @@ module "todo_resource_name" {
 
 | Name | Type |
 |------|------|
-| [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
+| [azurerm_databricks_workspace.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace) | resource |
+| [azurerm_resource_group.new](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
+| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Common tag to be applied to resources. | `map(string)` | n/a | yes |
+| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | Common tag to be applied to resources | `map(string)` | n/a | yes |
 | <a name="input_component"></a> [component](#input\_component) | https://hmcts.github.io/glossary/#component | `string` | n/a | yes |
-| <a name="input_env"></a> [env](#input\_env) | Environment value. | `string` | n/a | yes |
+| <a name="input_env"></a> [env](#input\_env) | Environment value | `string` | n/a | yes |
 | <a name="input_existing_resource_group_name"></a> [existing\_resource\_group\_name](#input\_existing\_resource\_group\_name) | Name of existing resource group to deploy resources into | `string` | `null` | no |
+| <a name="input_infrastructure_encryption_enabled"></a> [infrastructure\_encryption\_enabled](#input\_infrastructure\_encryption\_enabled) | Whether or not to enable infrastructure encryption. | `bool` | `false` | no |
 | <a name="input_location"></a> [location](#input\_location) | Target Azure location to deploy the resource | `string` | `"UK South"` | no |
-| <a name="input_name"></a> [name](#input\_name) | The default name will be product+component+env, you can override the product+component part by setting this | `string` | `""` | no |
+| <a name="input_managed_resource_group_name"></a> [managed\_resource\_group\_name](#input\_managed\_resource\_group\_name) | The name of the databricks managed resource group. Defaults to null and will be based off of the name of the databricks workspace. | `string` | `null` | no |
+| <a name="input_name"></a> [name](#input\_name) | The default name will be product+component+env, you can override the product+component part by setting this | `string` | `null` | no |
+| <a name="input_no_public_ip"></a> [no\_public\_ip](#input\_no\_public\_ip) | Whether or not the databricks workspace should have a public endpoint. | `bool` | `false` | no |
+| <a name="input_private_subnet_name"></a> [private\_subnet\_name](#input\_private\_subnet\_name) | The the name of the public subnet. | `string` | `null` | no |
+| <a name="input_private_subnet_nsg_id"></a> [private\_subnet\_nsg\_id](#input\_private\_subnet\_nsg\_id) | The the ID of the NSG associated with the public subnet. | `string` | `null` | no |
 | <a name="input_product"></a> [product](#input\_product) | https://hmcts.github.io/glossary/#product | `string` | n/a | yes |
-| <a name="input_project"></a> [project](#input\_project) | Project name - sds or cft. | `any` | n/a | yes |
+| <a name="input_public_subnet_name"></a> [public\_subnet\_name](#input\_public\_subnet\_name) | The the name of the public subnet. | `string` | `null` | no |
+| <a name="input_public_subnet_nsg_id"></a> [public\_subnet\_nsg\_id](#input\_public\_subnet\_nsg\_id) | The the ID of the NSG associated with the public subnet. | `string` | `null` | no |
+| <a name="input_sku"></a> [sku](#input\_sku) | The SKU to deploy databricks with. Defaults to 'premium'. | `string` | `"premium"` | no |
+| <a name="input_vnet_id"></a> [vnet\_id](#input\_vnet\_id) | The ID of the virtual network. | `string` | `null` | no |
 
 ## Outputs
 
@@ -53,6 +75,9 @@ module "todo_resource_name" {
 |------|-------------|
 | <a name="output_resource_group_location"></a> [resource\_group\_location](#output\_resource\_group\_location) | n/a |
 | <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | n/a |
+| <a name="output_workspace_id"></a> [workspace\_id](#output\_workspace\_id) | n/a |
+| <a name="output_workspace_name"></a> [workspace\_name](#output\_workspace\_name) | n/a |
+| <a name="output_workspace_url"></a> [workspace\_url](#output\_workspace\_url) | n/a |
 <!-- END_TF_DOCS -->
 
 ## Contributing
