@@ -6,6 +6,10 @@ output "resource_group_location" {
   value = local.resource_group_location
 }
 
+output "managed_resource_group_name" {
+  value = local.managed_resource_group_name
+}
+
 output "workspace_id" {
   value = azurerm_databricks_workspace.this.id
 }
