@@ -73,6 +73,7 @@ module "common_tags" {
 
 | Name | Description |
 |------|-------------|
+| <a name="output_managed_resource_group_name"></a> [managed\_resource\_group\_name](#output\_managed\_resource\_group\_name) | n/a |
 | <a name="output_resource_group_location"></a> [resource\_group\_location](#output\_resource\_group\_location) | n/a |
 | <a name="output_resource_group_name"></a> [resource\_group\_name](#output\_resource\_group\_name) | n/a |
 | <a name="output_workspace_id"></a> [workspace\_id](#output\_workspace\_id) | n/a |
