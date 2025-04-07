@@ -15,3 +15,37 @@ resource "azurerm_databricks_workspace" "this" {
     no_public_ip                                         = var.no_public_ip
   }
 }
+
+resource "databricks_cluster" "this" {
+  for_each                = var.clusters
+  cluster_name            = "${local.name}-${each.key}-${var.env}"
+  spark_version           = each.value.spark_version
+  spark_conf              = each.value.spark_conf
+  node_type_id            = each.value.node_type_id
+  autotermination_minutes = each.value.autotermination_minutes
+  custom_tags             = each.value.custom_tags
+  num_workers             = each.value.num_workers
+
+  autoscale {
+    min_workers = each.value.min_workers
+    max_workers = each.value.max_workers
+  }
+}
+
+resource "databricks_sql_endpoint" "this" {
+  for_each = var.sql_endpoints
+
+  name                      = "${local.name}-${each.key}-${var.env}"
+  warehouse_type            = each.value.warehouse_type
+  cluster_size              = each.value.cluster_size
+  enable_serverless_compute = each.value.enable_serverless_compute
+  min_num_clusters          = each.value.min_num_clusters
+  max_num_clusters          = each.value.max_num_clusters
+  auto_stop_mins            = each.value.auto_stop_mins
+}
+
+resource "databricks_sql_global_config" "this" {
+  security_policy    = "DATA_ACCESS_CONTROL"
+  data_access_config = var.sql_data_access_config
+  sql_config_params  = var.sql_config_params
+}
