@@ -69,3 +69,46 @@ variable "private_subnet_nsg_id" {
   type        = string
   default     = null
 }
+
+variable "clusters" {
+  description = "A map of clusters to deploy."
+  type = map(object({
+    spark_version           = optional(string, "15.4.x-scala2.12")
+    node_type_id            = optional(string, "Standard_D4ds_v5")
+    autotermination_minutes = optional(number, 20)
+    num_workers             = optional(number)
+    min_workers             = optional(number, 1)
+    max_workers             = optional(number, 2)
+    spark_config            = optional(map(string))
+  }))
+  default = {}
+}
+
+variable "sql_endpoints" {
+  description = "A map of SQL endpoints to deploy."
+  type = map(object({
+    warehouse_type            = optional(string, "CLASSIC")
+    cluster_size              = optional(string, "Small")
+    enable_serverless_compute = optional(bool, false)
+    min_num_clusters          = optional(number, 1)
+    max_num_clusters          = optional(number, 1)
+    auto_stop_mins            = optional(number, 30)
+  }))
+  default = {}
+}
+
+variable "sql_data_access_config" {
+
+  description = "SQL data access configuration."
+  type        = map(string)
+  default     = {}
+}
+
+variable "sql_config_params" {
+
+  description = "SQL configuration parameters."
+  type        = map(string)
+  default = {
+    "ANSI_MODE" : "true"
+  }
+}
